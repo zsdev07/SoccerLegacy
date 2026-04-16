@@ -23,8 +23,6 @@ jobs:
       - name: Generate Debug Keystore
         run: |
           keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
-          # Move it so Godot sees it in the project root
-          cp debug.keystore ./debug.keystore 
 
       - name: Godot Android Export
         uses: firebelley/godot-export@v5.2.1
@@ -34,11 +32,10 @@ jobs:
           relative_project_path: ./
           archive_output: true
           export_debug: true
-        env:
-          # We pass the keystore info through Env vars if the inputs aren't accepted
-          GODOT_ANDROID_DEBUG_KEYSTORE_PATH: debug.keystore
-          GODOT_ANDROID_DEBUG_KEYSTORE_USER: androiddebugkey
-          GODOT_ANDROID_DEBUG_KEYSTORE_PASSWORD: android
+          # Force the keystore info directly in the action inputs
+          android_debug_keystore_path: debug.keystore
+          android_debug_keystore_user: androiddebugkey
+          android_debug_keystore_password: android
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -46,3 +43,4 @@ jobs:
           name: SoccerLegacy-APK
           # This will find ANY zip file created by the export step
           path: /home/runner/.local/share/godot/archives/*.zip
+
