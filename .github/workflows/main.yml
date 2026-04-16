@@ -21,24 +21,28 @@ jobs:
           java-version: '17'
 
             # REMOVE the Generate Debug Keystore step entirely
-      
-      - name: Godot Android Export
-        uses: firebelley/godot-export@v5.2.1
-        with:
-          godot_executable_download_url: https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip
-          godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_export_templates.tpz
-          relative_project_path: ./
-          archive_output: true
-          export_debug: true
-        # We still keep these just in case the exporter checks them
-        env:
-          GODOT_ANDROID_DEBUG_KEYSTORE_PATH: "debug.keystore"
-          GODOT_ANDROID_DEBUG_KEYSTORE_USER: "androiddebugkey"
-          GODOT_ANDROID_DEBUG_KEYSTORE_PASS: "android"
+    
+      - name: Manual Godot Export
+        run: |
+          # Create the builds directory
+          mkdir -p builds/Android
+          
+          # Run the export with forced keystore arguments
+          /home/runner/.local/share/godot/godot_executable/Godot_v4.2.1-stable_linux.x86_64 \
+            --headless \
+            --path ./ \
+            --export-debug "Android" ./builds/Android/SoccerLegacy.apk \
+            --v \
+            "res://debug.keystore" \
+            "androiddebugkey" \
+            "android"
+
+      - name: Zip Result
+        run: |
+          zip -r SoccerLegacy.zip builds/Android/
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SoccerLegacy-APK
-          # This will find ANY zip file created by the export step
-          path: /home/runner/.local/share/godot/archives/*.zip
+          name: SoccerLegacy-v0.01
+          path: SoccerLegacy.zip
