@@ -1,0 +1,18 @@
+config_version=5
+
+[application]
+config/name="Soccer Legacy"
+run/main_scene="res://Splash.tscn"
+config/features=PackedStringArray("4.2", "C#", "Forward Plus")
+
+[display]
+window/size/viewport_width=1080
+window/size/viewport_height=1920
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[dotnet]
+project/assembly_name="Soccer Legacy"
+
+[rendering]
+renderer/rendering_method="mobile"
