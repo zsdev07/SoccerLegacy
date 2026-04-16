@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Texture2D" uid="uid_placeholder" path="res://Assets/SplashScreen.png" id="1_png"]
+[ext_resource type="Texture2D" path="res://Assets/SplashScreen.png" id="1_png"]
 
 [node name="Splash" type="Control"]
 layout_mode = 3
