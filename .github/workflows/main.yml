@@ -44,4 +44,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SoccerLegacy-APK
-          path: /home/runner/work/SoccerLegacy/SoccerLegacy/*.zip
+          # This will find ANY zip file created by the export step
+          path: /home/runner/.local/share/godot/archives/*.zip
