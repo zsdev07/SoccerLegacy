@@ -15,6 +15,11 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      # Fix: Generate a temporary debug keystore so the build doesn't fail
+      - name: Generate Debug Keystore
+        run: |
+          keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+
       - name: Godot Android Export
         uses: firebelley/godot-export@v5.2.1
         with:
@@ -23,5 +28,16 @@ jobs:
           relative_project_path: ./
           archive_export_output: true
           export_debug: true
+          # Fix: Point to the keystore we just made
+          android_debug_keystore_path: debug.keystore
+          android_debug_keystore_user: androiddebugkey
+          android_debug_keystore_password: android
         env:
           EXPORT_PRESET_NAME: Android
+
+      # CRITICAL: This ensures the APK is actually saved as an "Artifact" you can download
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SoccerLegacy-APK
+          path: ./**/*.apk
