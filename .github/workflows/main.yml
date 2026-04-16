@@ -9,13 +9,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # Fix: Generate a temporary debug keystore so the build doesn't fail
       - name: Generate Debug Keystore
         run: |
           keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
@@ -26,18 +30,16 @@ jobs:
           godot_executable_download_url: https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip
           godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_export_templates.tpz
           relative_project_path: ./
-          archive_export_output: true
+          archive_output: true
           export_debug: true
-          # Fix: Point to the keystore we just made
-          android_debug_keystore_path: debug.keystore
-          android_debug_keystore_user: androiddebugkey
-          android_debug_keystore_password: android
         env:
-          EXPORT_PRESET_NAME: Android
+          # We pass the keystore info through Env vars if the inputs aren't accepted
+          GODOT_ANDROID_DEBUG_KEYSTORE_PATH: debug.keystore
+          GODOT_ANDROID_DEBUG_KEYSTORE_USER: androiddebugkey
+          GODOT_ANDROID_DEBUG_KEYSTORE_PASSWORD: android
 
-      # CRITICAL: This ensures the APK is actually saved as an "Artifact" you can download
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: SoccerLegacy-APK
-          path: ./**/*.apk
+          path: /home/runner/work/SoccerLegacy/SoccerLegacy/*.zip
