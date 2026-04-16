@@ -32,15 +32,14 @@ jobs:
           relative_project_path: ./
           archive_output: true
           export_debug: true
-          # Force the keystore info directly in the action inputs
-          android_debug_keystore_path: debug.keystore
-          android_debug_keystore_user: androiddebugkey
-          android_debug_keystore_password: android
+        env:
+          # THIS IS THE KEY: Godot's built-in env variables for headless export
+          GODOT_ANDROID_DEBUG_KEYSTORE_PATH: "debug.keystore"
+          GODOT_ANDROID_DEBUG_KEYSTORE_USER: "androiddebugkey"
+          GODOT_ANDROID_DEBUG_KEYSTORE_PASS: "android"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: SoccerLegacy-APK
-          # This will find ANY zip file created by the export step
           path: /home/runner/.local/share/godot/archives/*.zip
-
