@@ -20,10 +20,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Generate Debug Keystore
-        run: |
-          keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
-
+            # REMOVE the Generate Debug Keystore step entirely
+      
       - name: Godot Android Export
         uses: firebelley/godot-export@v5.2.1
         with:
@@ -32,8 +30,8 @@ jobs:
           relative_project_path: ./
           archive_output: true
           export_debug: true
+        # We still keep these just in case the exporter checks them
         env:
-          # THIS IS THE KEY: Godot's built-in env variables for headless export
           GODOT_ANDROID_DEBUG_KEYSTORE_PATH: "debug.keystore"
           GODOT_ANDROID_DEBUG_KEYSTORE_USER: "androiddebugkey"
           GODOT_ANDROID_DEBUG_KEYSTORE_PASS: "android"
@@ -42,4 +40,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SoccerLegacy-APK
+          # This will find ANY zip file created by the export step
           path: /home/runner/.local/share/godot/archives/*.zip
